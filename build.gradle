@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    mainClass.set("Application")
+    mainClass.set("Game")
 }
 
 group = 'com.goncalomfs.hero'
@@ -23,3 +23,4 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
