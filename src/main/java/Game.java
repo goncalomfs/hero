@@ -13,10 +13,10 @@ import com.googlecode.lanterna.input.KeyType;
 
 public class Game {
     private Screen screen;
-    private Arena arena = new Arena(80,24);
+    private Arena arena = new Arena(80,40);
     public Game() {
         try {
-            TerminalSize terminalSize = new TerminalSize(40, 20);
+            TerminalSize terminalSize = new TerminalSize(80, 40);
             DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
                     .setInitialTerminalSize(terminalSize);
             Terminal terminal = terminalFactory.createTerminal();
@@ -25,8 +25,8 @@ public class Game {
             screen.startScreen(); // Screens must be started
             screen.doResizeIfNecessary(); // Resize screen if necessary
             TextGraphics graphics = screen.newTextGraphics();
-            graphics.setBackgroundColor(TextColor.Factory.fromString("#336699"));
-            graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(40, 20), ' ');
+            graphics.setBackgroundColor(TextColor.Factory.fromString("#008631"));
+            graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(80, 40), ' ');
         } catch (IOException e) {
             e.printStackTrace();
         }
