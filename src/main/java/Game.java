@@ -10,10 +10,7 @@ import com.googlecode.lanterna.input.KeyType;
 
 public class Game {
     private Screen screen;
-    private Hero hero;
-    private void moveHero(Position position) {
-        hero.setPosition(position);
-    }
+    private Arena arena = new Arena(80,24);
     public Game() {
         try {
             TerminalSize terminalSize = new TerminalSize(40, 20);
@@ -24,9 +21,6 @@ public class Game {
             screen.setCursorPosition(null); // We don't need a cursor
             screen.startScreen(); // Screens must be started
             screen.doResizeIfNecessary(); // Resize screen if necessary
-
-            // Initialize the hero at position (10, 10)
-            hero = new Hero(10, 10);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -34,7 +28,7 @@ public class Game {
 
     private void draw() throws IOException {
         screen.clear();
-        hero.draw(screen);
+        arena.draw(screen);
         screen.refresh();
     }
 
@@ -60,23 +54,7 @@ public class Game {
     }
 
     private void processKey(KeyStroke key) throws IOException {
-        System.out.println(key);
-        switch (key.getKeyType()) {
-            case ArrowUp:
-                moveHero(hero.moveUp());
-                break;
-            case ArrowDown:
-                moveHero(hero.moveDown());
-                break;
-            case ArrowLeft:
-                moveHero(hero.moveLeft());
-                break;
-            case ArrowRight:
-                moveHero(hero.moveRight());
-                break;
-            default:
-                break;
-        }
+        arena.processKey(key);
     }
 
     public static void main(String[] args) {
