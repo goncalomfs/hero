@@ -66,8 +66,14 @@ public class Arena {
     }
 
     public void moveHero(Position position) {
-        if (canHeroMove(position))
+        if (canHeroMove(position)) {
             hero.setPosition(position);
+        }
+        retrieveCoins();
+    }
+
+    public void retrieveCoins() {
+        coins.removeIf(coin -> coin.getPosition().equals(hero.getPosition()));
     }
 
     public void draw(TextGraphics graphics) {
