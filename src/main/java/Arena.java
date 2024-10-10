@@ -10,11 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static java.util.function.Predicate.not;
+
 public class Arena {
     private int width;
     private int height;
     private List<Wall> walls;
     private List<Coin> coins;
+    private List<Monster> monsters;
     private Hero hero = new Hero(new Position(10,10));
     private List<Wall> createWalls() {
         List<Wall> walls = new ArrayList<>();
@@ -33,29 +36,45 @@ public class Arena {
         Random random = new Random();
         ArrayList<Coin> coins = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            Coin tempCoin = new Coin(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1);
-            while (inCoins(tempCoin, coins) && (tempCoin.equals(hero.getPosition()))){
-                tempCoin = new Coin(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1);
+            Coin tempCoin = new Coin(new Position(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1));
+            while (inElement(tempCoin, coins) && (tempCoin.getPosition().equals(hero.getPosition()))){
+                tempCoin = new Coin(new Position(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1));
             }
             coins.add(tempCoin);
         }
         return coins;
     }
 
-    public boolean inCoins (Coin coin, List<Coin> coins) {
-        for (Coin coin1: coins) {
-            if (coin==coin1) {
+    private List<Monster> createMonsters() {
+        Random random = new Random();
+        ArrayList<Monster> monsters = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            Monster tempMonster = new Monster(new Position(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1));
+            while (inElement(tempMonster, monsters) && (tempMonster.getPosition().equals(hero.getPosition()))) {
+                tempMonster = new Monster(new Position(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1));
+            }
+            monsters.add(tempMonster);
+        }
+        return monsters;
+    }
+
+    public boolean inElement(Element element, List<? extends Element> elements) {
+        for (Element el : elements) {
+            if (element.getPosition().equals(el.getPosition())) {
                 return true;
             }
         }
         return false;
     }
+
     public Arena(int width, int height) {
         this.width = width;
         this.height = height;
         this.walls = createWalls();
         this.coins = createCoins();
+        this.monsters = createMonsters();
     }
+
     public boolean canHeroMove(Position position) {
         for (Wall wall : walls) {
             if (wall.getPosition().equals(position)) {
@@ -70,10 +89,23 @@ public class Arena {
             hero.setPosition(position);
         }
         retrieveCoins();
+        for (Monster monster : monsters) {
+            monster.move(width,height);
+        }
+        verifyMonsterCollisions();
     }
 
     public void retrieveCoins() {
         coins.removeIf(coin -> coin.getPosition().equals(hero.getPosition()));
+    }
+
+    public void verifyMonsterCollisions() {
+        for (Monster monster : monsters) {
+            if (hero.getPosition().equals(monster.getPosition())) {
+                System.out.print("You Lost!");
+                System.exit(0);
+            }
+        }
     }
 
     public void draw(TextGraphics graphics) {
@@ -81,14 +113,18 @@ public class Arena {
         graphics.setForegroundColor(TextColor.Factory.fromString("#FFFF33"));
         graphics.enableModifiers(SGR.BOLD);
         graphics.putString(new TerminalPosition(hero.getPosition().getX(), hero.getPosition().getY()), "X");
-        for (Wall wall : walls)
+        for (Wall wall : walls) {
             wall.draw(graphics);
+        }
         for (Coin coin : coins) {
             coin.draw(graphics);
         }
+        for (Monster monster : monsters) {
+            monster.draw(graphics);
+        }
     }
 
-    public void processKey(KeyStroke key) throws IOException {
+    public void processKey(KeyStroke key)  {
         switch (key.getKeyType()) {
             case ArrowUp:
                 moveHero(hero.moveUp());
