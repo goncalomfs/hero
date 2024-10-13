@@ -10,7 +10,7 @@ public class Wall extends Element {
 
     @Override
     public void draw(TextGraphics graphics) {
-        graphics.setForegroundColor(TextColor.ANSI.RED);
+        graphics.setForegroundColor(TextColor.ANSI.WHITE);
         graphics.putString(new TerminalPosition(position.getX(), position.getY()), "|");
     }
 }

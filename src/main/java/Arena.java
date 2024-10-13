@@ -111,8 +111,6 @@ public class Arena {
     public void draw(TextGraphics graphics) {
         hero.draw(graphics);
         graphics.setForegroundColor(TextColor.Factory.fromString("#FFFF33"));
-        graphics.enableModifiers(SGR.BOLD);
-        graphics.putString(new TerminalPosition(hero.getPosition().getX(), hero.getPosition().getY()), "X");
         for (Wall wall : walls) {
             wall.draw(graphics);
         }

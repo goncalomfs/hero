@@ -1,3 +1,4 @@
+import com.googlecode.lanterna.SGR;
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -10,7 +11,8 @@ public class Hero extends Element {
 
     @Override
     public void draw(TextGraphics graphics) {
-        graphics.setForegroundColor(TextColor.ANSI.CYAN);
+        graphics.enableModifiers(SGR.BOLD);
+        graphics.setForegroundColor(TextColor.ANSI.GREEN_BRIGHT);
         graphics.putString(new TerminalPosition(position.getX(), position.getY()), "X");
     }
 
