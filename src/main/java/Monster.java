@@ -7,6 +7,7 @@ public class Monster extends Element {
     public Monster(Position position) {
         super(position);
     }
+
     public void move(int width, int height) {
         Random random = new Random();
         int addX = random.nextInt(3) - 1;
