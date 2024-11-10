@@ -6,8 +6,9 @@ public class Coin extends Element {
     public Coin(Position position) {
         super(position);
     }
+
     @Override
-    public void draw(TextGraphics graphics) {
+    public void draw(GenericGraphics graphics) {
         graphics.setForegroundColor(TextColor.ANSI.YELLOW);
         graphics.putString(new TerminalPosition(position.getX(), position.getY()), "$");
     }

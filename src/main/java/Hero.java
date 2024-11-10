@@ -10,7 +10,7 @@ public class Hero extends Element {
     }
 
     @Override
-    public void draw(TextGraphics graphics) {
+    public void draw(GenericGraphics graphics) {
         graphics.enableModifiers(SGR.BOLD);
         graphics.setForegroundColor(TextColor.ANSI.GREEN_BRIGHT);
         graphics.putString(new TerminalPosition(position.getX(), position.getY()), "X");

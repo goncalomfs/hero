@@ -93,6 +93,7 @@ public class Arena {
             monster.move(width,height);
         }
         verifyMonsterCollisions();
+        verifyCoinsCollection();
     }
 
     public void retrieveCoins() {
@@ -107,8 +108,14 @@ public class Arena {
             }
         }
     }
+    public void verifyCoinsCollection() {
+        if (coins.isEmpty()) {
+            System.out.print("You Won!");
+            System.exit(0);
+        }
+    }
 
-    public void draw(TextGraphics graphics) {
+    public void draw(GenericGraphics graphics) {
         hero.draw(graphics);
         graphics.setForegroundColor(TextColor.Factory.fromString("#FFFF33"));
         for (Wall wall : walls) {

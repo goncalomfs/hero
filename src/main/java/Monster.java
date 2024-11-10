@@ -19,7 +19,7 @@ public class Monster extends Element {
     }
 
     @Override
-    public void draw(TextGraphics graphics) {
+    public void draw(GenericGraphics graphics) {
         graphics.setForegroundColor(TextColor.ANSI.RED);
         graphics.putString(new TerminalPosition(position.getX(), position.getY()), "M");
     }
