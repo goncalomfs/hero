@@ -4,6 +4,12 @@ import com.googlecode.lanterna.graphics.TextGraphics;
 import java.util.Random;
 
 public class Monster extends Element {
+    private static Random random = new Random();
+
+    public static void setRandom(Random newRandom) {
+        random = newRandom;
+    }
+
     public Monster(Position position) {
         super(position);
     }
