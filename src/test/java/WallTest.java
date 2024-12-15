@@ -17,10 +17,7 @@ public class WallTest {
 
     @Test
     public void testDraw() {
-        // Act
         wall.draw(graphics);
-
-        // Assert
         verify(graphics).setForegroundColor(TextColor.ANSI.WHITE);
         verify(graphics).putString(new TerminalPosition(3, 7), "|");
     }

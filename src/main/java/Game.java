@@ -2,7 +2,6 @@ import java.io.IOException;
 
 import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.TerminalSize;
@@ -13,54 +12,75 @@ import com.googlecode.lanterna.input.KeyType;
 
 public class Game {
     private Screen screen;
-    private Arena arena = new Arena(80,40);
+    private Arena arena;
+    private Graphics graphics;
+
     public Game() {
         try {
             TerminalSize terminalSize = new TerminalSize(80, 40);
-            DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
-                    .setInitialTerminalSize(terminalSize);
+            DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory().setInitialTerminalSize(terminalSize);
             Terminal terminal = terminalFactory.createTerminal();
             this.screen = new TerminalScreen(terminal);
-            screen.setCursorPosition(null); // We don't need a cursor
-            screen.startScreen(); // Screens must be started
-            screen.doResizeIfNecessary(); // Resize screen if necessary
-            TextGraphics graphics = screen.newTextGraphics();
-            graphics.setBackgroundColor(TextColor.Factory.fromString("#008631"));
-            graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(80, 40), ' ');
+            this.graphics = new Graphics(screen.newTextGraphics());
+            this.arena = new Arena(80, 40);
+            screen.setCursorPosition(null);
+            screen.startScreen();
+            screen.doResizeIfNecessary();
+            initializeBackground();
         } catch (IOException e) {
+            System.err.println("Error initializing game: " + e.getMessage());
             e.printStackTrace();
+            System.exit(1);
         }
     }
 
-    private void draw() throws IOException {
+    private void initializeBackground() {
+        graphics.setForegroundColor(TextColor.Factory.fromString("#008631"));
+        graphics.putString(new TerminalPosition(0, 0), " ");
+    }
+
+    public void draw() throws IOException {
         screen.clear();
-        arena.draw(new Graphics(screen.newTextGraphics())); // Create a wrapper
+        arena.draw(graphics);
         screen.refresh();
     }
 
+    public void processKey(KeyStroke key) {
+        arena.processKey(key);
+    }
+
     public void run() {
-        while (true) {
-            try {
+        try {
+            while (true) {
                 draw();
                 KeyStroke key = screen.readInput();
-                processKey(key);
 
                 if (key.getKeyType() == KeyType.Character && key.getCharacter() == 'q') {
-                    screen.close();
-                    return;
+                    break;
                 }
                 if (key.getKeyType() == KeyType.EOF) {
                     break;
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                processKey(key);
             }
+        } catch (IOException e) {
+            System.err.println("Error during game execution: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            closeScreen();
         }
     }
 
-    private void processKey(KeyStroke key) throws IOException {
-        arena.processKey(key);
+    private void closeScreen() {
+        try {
+            if (screen != null) {
+                screen.close();
+            }
+        } catch (IOException e) {
+            System.err.println("Error closing the screen: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

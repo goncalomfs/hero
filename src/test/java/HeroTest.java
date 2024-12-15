@@ -21,7 +21,6 @@ public class HeroTest {
     }
 
     @Test
-
     public void testDraw() {
         hero.draw(graphics);
         verify(graphics).enableModifiers(SGR.BOLD);
