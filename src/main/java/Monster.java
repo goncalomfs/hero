@@ -14,15 +14,27 @@ public class Monster extends Element {
         super(position);
     }
 
-    public void move(int width, int height) {
-        Random random = new Random();
-        int addX = random.nextInt(3) - 1;
-        int addY = random.nextInt(3) - 1;
-        int newX = this.position.getX() + addX;
-        int newY = this.position.getY() + addY;
-        if (newX > 0 && newX < width - 1 && newY > 0 && newY < height - 1) {
-            setPosition(new Position(newX, newY));
+    public Position nextPosition() {
+        Random rand = new Random();
+        int n = rand.nextInt(4);
+        Position pos= null;
+        switch (n) {
+            case 0:
+                pos = new Position(position.getX() + 1, position.getY());
+                break;
+            case 1:
+                pos = new Position(position.getX(), position.getY() - 1);
+                break;
+            case 2:
+                pos = new Position(position.getX(), position.getY() + 1);
+                break;
+            case 3:
+                pos = new Position(position.getX() - 1, position.getY());
+                break;
+            default:
+                break;
         }
+        return pos;
     }
 
     @Override

@@ -4,13 +4,10 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import static java.util.function.Predicate.not;
 
 public class Arena {
     private int width;
@@ -18,7 +15,8 @@ public class Arena {
     private List<Wall> walls;
     private List<Coin> coins;
     private List<Monster> monsters;
-    private Hero hero = new Hero(new Position(10,10));
+    private Hero hero = new Hero(new Position(10, 10));
+
     private List<Wall> createWalls() {
         List<Wall> walls = new ArrayList<>();
         for (int c = 0; c < width; c++) {
@@ -32,12 +30,52 @@ public class Arena {
         return walls;
     }
 
+    public Arena(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.walls = createWalls();
+        this.coins = createCoins();
+        this.monsters = createMonsters(); // Corrected this line to call createMonsters
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public List<Wall> getWalls() {
+        return walls;
+    }
+
+    public List<Coin> getCoins() {
+        return coins;
+    }
+
+    public List<Monster> getMonsters() {
+        return monsters;
+    }
+
+    public Hero getHero() {
+        return hero;
+    }
+
+    public void setHero(Hero hero) {
+        this.hero = hero;
+    }
+
+    public Position getHeroPosition() {
+        return hero.getPosition();
+    }
+
     private List<Coin> createCoins() {
         Random random = new Random();
         ArrayList<Coin> coins = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Coin tempCoin = new Coin(new Position(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1));
-            while (inElement(tempCoin, coins) && (tempCoin.getPosition().equals(hero.getPosition()))){
+            while (inElement(tempCoin, coins) && (tempCoin.getPosition().equals(hero.getPosition()))) {
                 tempCoin = new Coin(new Position(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1));
             }
             coins.add(tempCoin);
@@ -67,14 +105,6 @@ public class Arena {
         return false;
     }
 
-    public Arena(int width, int height) {
-        this.width = width;
-        this.height = height;
-        this.walls = createWalls();
-        this.coins = createCoins();
-        this.monsters = createMonsters();
-    }
-
     public boolean canHeroMove(Position position) {
         for (Wall wall : walls) {
             if (wall.getPosition().equals(position)) {
@@ -84,13 +114,29 @@ public class Arena {
         return true;
     }
 
+    public boolean canMonsterMove(Position position) {
+        for (Wall wall : walls) {
+            if (wall.getPosition().equals(position)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void GameOver() {
+        System.exit(0);
+    }
+
     public void moveHero(Position position) {
         if (canHeroMove(position)) {
             hero.setPosition(position);
         }
         retrieveCoins();
         for (Monster monster : monsters) {
-            monster.move(width,height);
+            Position nextPosition = monster.nextPosition();
+            if (canMonsterMove(nextPosition)) {
+                monster.setPosition(nextPosition);
+            }
         }
         verifyMonsterCollisions();
         verifyCoinsCollection();
@@ -104,14 +150,15 @@ public class Arena {
         for (Monster monster : monsters) {
             if (hero.getPosition().equals(monster.getPosition())) {
                 System.out.print("You Lost!");
-                System.exit(0);
+                GameOver();
             }
         }
     }
+
     public void verifyCoinsCollection() {
         if (coins.isEmpty()) {
             System.out.print("You Won!");
-            System.exit(0);
+            GameOver();
         }
     }
 
@@ -129,7 +176,7 @@ public class Arena {
         }
     }
 
-    public void processKey(KeyStroke key)  {
+    public void processKey(KeyStroke key) {
         switch (key.getKeyType()) {
             case ArrowUp:
                 moveHero(hero.moveUp());
