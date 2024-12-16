@@ -35,14 +35,42 @@ public class PositionTest {
     }
 
     @Test
-    public void testEquals_equal() {
-        Position position2 = new Position(5, 4);
-        assertTrue(position.equals(position2));
+    void testEqualsSameObject() {
+        Position p = new Position(5, 10);
+        assertEquals(p, p);
     }
 
     @Test
-    public void testEquals_different() {
-        Position position2 = new Position(4, 5);
-        assertFalse(position.equals(position2));
+    void testEqualsNullObject() {
+        Position p = new Position(5, 10);
+        assertNotEquals(null, p);
+    }
+
+    @Test
+    void testEqualsDifferentClass() {
+        Position p = new Position(5, 10);
+        String notAPosition = "Not a Position";
+        assertNotEquals(p, notAPosition);
+    }
+
+    @Test
+    void testEqualsSameValues() {
+        Position p1 = new Position(5, 10);
+        Position p2 = new Position(5, 10);
+        assertEquals(p1, p2);
+    }
+
+    @Test
+    void testEqualsDifferentX() {
+        Position p1 = new Position(5, 10);
+        Position p2 = new Position(6, 10);
+        assertNotEquals(p1, p2);
+    }
+
+    @Test
+    void testEqualsDifferentY() {
+        Position p1 = new Position(5, 10);
+        Position p2 = new Position(5, 11);
+        assertNotEquals(p1, p2);
     }
 }
